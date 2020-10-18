@@ -17,6 +17,19 @@ namespace tnats_mobile
             MainPage = new AppShell();
         }
 
+        static ObservationDatabase database;
+        public static ObservationDatabase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new ObservationDatabase();
+                }
+                return database;
+            }
+        }
+
         protected override void OnStart()
         {
         }

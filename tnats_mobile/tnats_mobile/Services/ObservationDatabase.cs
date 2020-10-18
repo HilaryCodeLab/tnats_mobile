@@ -9,7 +9,7 @@ using tnats_mobile.Util;
 
 namespace tnats_mobile.Services
 {
-    class ObservationDatabase
+    public class ObservationDatabase
     {
         static readonly Lazy<SQLiteAsyncConnection> lazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
         {

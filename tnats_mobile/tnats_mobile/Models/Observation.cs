@@ -9,6 +9,7 @@ namespace tnats_mobile.Models
     {
         [PrimaryKey, AutoIncrement]
         public int id { get; set; }
+        public Guid guid { get; set; }
         public int user_id { get; set; }
         public string location { get; set; }
         public string geo_location { get; set; }
