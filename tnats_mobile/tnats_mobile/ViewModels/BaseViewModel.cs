@@ -14,6 +14,19 @@ namespace tnats_mobile.ViewModels
     {
         public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
+        static ObservationDatabase database;
+        public static ObservationDatabase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new ObservationDatabase();
+                }
+                return database;
+            }
+        }
+
         bool isBusy = false;
         public bool IsBusy
         {
