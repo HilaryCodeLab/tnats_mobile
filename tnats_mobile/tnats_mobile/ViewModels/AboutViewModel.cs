@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using tnats_mobile.Services;
 using Xamarin.Essentials;
@@ -27,9 +28,22 @@ namespace tnats_mobile.ViewModels
                    Debug.WriteLine("network is unavailable");
                }
                //await Browser.OpenAsync("https://aka.ms/xamain-quickstart");
-           });
-        }
 
+
+           });
+
+            TestCommand = new Command(async () =>
+            {
+                var location = await LocationServices.GetLocation();
+
+                if (location != null)
+                {
+                    Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                }
+            });
+        }
+         
         public ICommand OpenWebCommand { get; }
+        public ICommand TestCommand { get; }
     }
 }

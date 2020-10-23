@@ -9,6 +9,7 @@ using tnats_mobile.ViewModels;
 using Plugin.Media.Abstractions;
 using System.Collections.ObjectModel;
 using System.Linq;
+using tnats_mobile.Services;
 
 namespace tnats_mobile.Views
 {
@@ -111,6 +112,17 @@ namespace tnats_mobile.Views
 
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
+            var location = await LocationServices.GetLocation();
+
+            double? longitude = null;
+            double? latitude = null;
+
+            if (location != null)
+            {
+                longitude = location.Longitude;
+                latitude = location.Latitude;
+            }
+
             Observation newObs = new Observation()
             {
                 guid = Guid.NewGuid(),
@@ -120,7 +132,9 @@ namespace tnats_mobile.Views
                 notes = txtNotes.Text,
                 photo = photo,
                 approved = false,
-                active = true
+                active = true,
+                longitude = longitude,
+                latitude = latitude
             };
 
             await App.Database.SaveItemAsync(newObs);
