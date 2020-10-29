@@ -18,10 +18,11 @@ namespace tnats_mobile.Services
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
 
             //var apiInput = new { email = email, password = password };
-            var apiInput = new { email = "admin.user@l7api.test", password = "Password1" };
+            var apiInput = new { email = "test@test.com.au", password = "123123123" };
 
             request.AddJsonBody(apiInput);
-            request.AddHeader("Accept", "text/html");
+            request.AddHeader("Accept", "*/*");
+            request.AddHeader("Content-Type", "application/json");
 
             string token = "";
             try
@@ -30,7 +31,7 @@ namespace tnats_mobile.Services
 
                 JObject jObject = JObject.Parse(response.Content);
 
-                token = jObject["data"]["token"].ToString();
+                token = jObject["token"].ToString();
 
                 if (response.IsSuccessful)
                 {
@@ -100,6 +101,56 @@ namespace tnats_mobile.Services
 
             //add parameters and token to request
             request.Parameters.Clear();
+            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+
+            try
+            {
+                IRestResponse response = client.Execute(request);
+
+                JObject jObject = JObject.Parse(response.Content);
+
+                //string token = jObject["data"]["token"].ToString();
+
+                if (response.IsSuccessful)
+                {
+                    Debug.WriteLine(@"\test successfully saved.");
+                    bRet = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+
+            return bRet;
+        }
+
+        public bool test3(string email, string password)
+        {
+            bool bRet = false;
+            string token = Login(email, password);
+
+            var client = new RestClient();
+
+            var request = new RestRequest(Constants.RestUrl + "/api/addObs", Method.POST, DataFormat.Json);
+
+            request.AddHeader("Content-Type", "application/json");
+
+            //object containing input parameter data for DoStuff() API method
+            var apiInput = new
+            {
+                guid = Guid.NewGuid(),
+                user_id = 1,
+                location = "test",
+                species = "test",
+                notes = "test",
+                approved = false,
+                active = true
+            };
+
+            //add parameters and token to request
+            request.Parameters.Clear();
+            request.AddJsonBody(apiInput);
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try

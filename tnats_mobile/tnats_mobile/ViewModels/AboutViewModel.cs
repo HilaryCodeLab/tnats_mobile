@@ -34,15 +34,17 @@ namespace tnats_mobile.ViewModels
 
             TestCommand = new Command(async () =>
             {
-                var location = await LocationServices.GetLocation();
+                //var location = await LocationServices.GetLocation();
 
-                if (location != null)
-                {
-                    Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                }
+                //if (location != null)
+                //{
+                //    Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                //}
+
+                bool b = new ApiServices().test3("", "");
             });
         }
-         
+
         public ICommand OpenWebCommand { get; }
         public ICommand TestCommand { get; }
     }

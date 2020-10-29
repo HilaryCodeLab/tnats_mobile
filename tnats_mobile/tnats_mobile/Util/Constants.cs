@@ -27,6 +27,7 @@ namespace tnats_mobile.Util
             }
         }
 
-        public static string RestUrl = Device.RuntimePlatform == Device.Android ? "http://mkf-someapp.herokuapp.com" : "http://mkf-someapp.herokuapp.com";
+        public static string RestUrl = Device.RuntimePlatform == Device.Android ? "http://tnats-admin-portal.herokuapp.com" : "http://tnats-admin-portal.herokuapp.com";
+        //public static string RestUrl = Device.RuntimePlatform == Device.Android ? "http://mkf-someapp.herokuapp.com" : "http://mkf-someapp.herokuapp.com";
     }
 }
