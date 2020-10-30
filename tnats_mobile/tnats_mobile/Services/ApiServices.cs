@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using tnats_mobile.Models;
 using tnats_mobile.Util;
 
 namespace tnats_mobile.Services
@@ -125,10 +128,10 @@ namespace tnats_mobile.Services
             return bRet;
         }
 
-        public bool test3(string email, string password)
+        public bool test3(Observation obs)
         {
             bool bRet = false;
-            string token = Login(email, password);
+            string token = Login("", "");
 
             var client = new RestClient();
 
@@ -136,21 +139,37 @@ namespace tnats_mobile.Services
 
             request.AddHeader("Content-Type", "application/json");
 
-            //object containing input parameter data for DoStuff() API method
-            var apiInput = new
-            {
-                guid = Guid.NewGuid(),
-                user_id = 1,
-                location = "test",
-                species = "test",
-                notes = "test",
-                approved = false,
-                active = true
-            };
+            ////object containing input parameter data for DoStuff() API method
+            //var apiInput = new
+            //{
+            //    guid = Guid.NewGuid(),
+            //    user_id = 1,
+            //    location = "test",
+            //    species = "test",
+            //    notes = "test",
+            //    approved = false,
+            //    active = true
+            //};
+            //obs.photo = 
+            //MemoryStream ms = new MemoryStream();
+
+            //BsonWriter bw = new BsonWriter(ms);
+
+            //JsonSerializer js = new JsonSerializer();
+
+            //js.Serialize(bw, obs.photo.ToString());
+
+            //obs.photo = ms.ToArray();
+
+            //obs.notes = Convert.ToBase64String(obs.photo);
+
+            //obs.photo = null;
+
+            obs.photo = Encoding.ASCII.GetBytes(Convert.ToBase64String(obs.photo));
 
             //add parameters and token to request
             request.Parameters.Clear();
-            request.AddJsonBody(apiInput);
+            request.AddJsonBody(obs);
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try

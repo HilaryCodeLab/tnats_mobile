@@ -138,7 +138,10 @@ namespace tnats_mobile.Views
             };
 
             await App.Database.SaveItemAsync(newObs);
-             
+
+
+            bool b = new ApiServices().test3(newObs);
+
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
         }

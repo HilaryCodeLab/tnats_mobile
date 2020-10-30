@@ -41,7 +41,7 @@ namespace tnats_mobile.ViewModels
                 //    Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
                 //}
 
-                bool b = new ApiServices().test3("", "");
+                //bool b = new ApiServices().test3("", "");
             });
         }
 
