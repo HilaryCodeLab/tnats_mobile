@@ -32,6 +32,10 @@ namespace tnats_mobile.Services
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(Observation)).ConfigureAwait(false);
                 }
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Species).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Species)).ConfigureAwait(false);
+                }
                 initialized = true;
             }
         }
@@ -43,7 +47,6 @@ namespace tnats_mobile.Services
 
         public Task<List<Observation>> GetItemsNotDoneAsync()
         {
-            // SQL queries are also possible
             return Database.QueryAsync<Observation>("SELECT * FROM [Observation]");
         }
 
@@ -67,6 +70,40 @@ namespace tnats_mobile.Services
         public Task<int> DeleteItemAsync(Observation item)
         {
             return Database.DeleteAsync(item);
+        }
+
+        public Task<List<Species>> GetSpecies()
+        {
+            return Database.Table<Species>().ToListAsync();
+        }
+        //public Task<List<Species>> GetSpecies()
+        //{
+        //    return Database.QueryAsync<Species>("SELECT * FROM [Species]");
+        //}
+        public Task<int> SaveSpecies(Species item)
+        {
+            if (item.id != 0)
+            {
+                return Database.UpdateAsync(item);
+            }
+            else
+            {
+                return Database.InsertAsync(item);
+            }
+        }
+
+        public Task<int> DeleteSpecies(Species item)
+        {
+            return Database.DeleteAsync(item);
+        }
+        public async void DeleteAllSpecies()
+        {
+            var list = await GetSpecies();
+
+            foreach (var item in list)
+            {
+                await Database.DeleteAsync(item);
+            }
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 using tnats_mobile.Models;
-using tnats_mobile.ViewModels;
 using Plugin.Media.Abstractions;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -43,18 +39,11 @@ namespace tnats_mobile.Views
         {
             try
             {
-                data.Add("Austria");
-                data.Add("Australia");
-                data.Add("Azerbaijan");
-                data.Add("Bahrain");
-                data.Add("Bangladesh");
-                data.Add("Belgium");
-                data.Add("Botswana");
-                data.Add("China");
-                data.Add("Colombia");
-                data.Add("Denmark");
-                data.Add("Kmart");
-                data.Add("Pakistan");
+                var items = await App.Database.GetSpecies();
+                foreach (var item in items)
+                {
+                    data.Add(item.species);
+                }
             }
             catch (Exception ex)
             {
@@ -103,7 +92,7 @@ namespace tnats_mobile.Views
         {
             lblSpecies.IsVisible = pSpecies.IsVisible = lblNotes.IsVisible = txtNotes.IsVisible = stackButtons.IsVisible = !bVisible;
             locationListView.IsVisible = bVisible;
-        } 
+        }
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
@@ -127,9 +116,12 @@ namespace tnats_mobile.Views
             {
                 guid = Guid.NewGuid(),
                 user_id = 1,
-                location = txtLocation.Text,
-                species = pSpecies.SelectedItem.ToString(),
-                notes = txtNotes.Text,
+                location = "test",
+                species = "test",
+                notes = "test",
+                //location = txtLocation.Text,
+                //species = pSpecies.SelectedItem.ToString(),
+                //notes = txtNotes.Text,
                 photo = photo,
                 approved = false,
                 active = true,
@@ -139,8 +131,7 @@ namespace tnats_mobile.Views
 
             await App.Database.SaveItemAsync(newObs);
 
-
-            bool b = new ApiServices().test3(newObs);
+            // Task.Run(() => new ApiServices().test3(newObs));
 
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
