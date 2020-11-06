@@ -40,6 +40,10 @@ namespace tnats_mobile.Services
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(Location)).ConfigureAwait(false);
                 }
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(User).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(User)).ConfigureAwait(false);
+                }
                 initialized = true;
             }
         }
@@ -76,10 +80,11 @@ namespace tnats_mobile.Services
             return Database.DeleteAsync(item);
         }
 
+        #region Species
         public Task<List<Species>> GetSpecies()
         {
             return Database.Table<Species>().ToListAsync();
-        } 
+        }
         public Task<int> SaveSpecies(Species item)
         {
             if (item.id != 0)
@@ -105,7 +110,9 @@ namespace tnats_mobile.Services
                 await Database.DeleteAsync(item);
             }
         }
+        #endregion
 
+        #region Locations
         public Task<List<Location>> GetLocations()
         {
             return Database.Table<Location>().ToListAsync();
@@ -134,6 +141,28 @@ namespace tnats_mobile.Services
             {
                 await Database.DeleteAsync(item);
             }
+        }
+
+        #endregion
+
+        public Task<User> GetLoggedUser()
+        {
+            return Database.Table<User>().FirstOrDefaultAsync();
+        }
+        public Task<int> SaveUser(User item)
+        {
+            return Database.InsertAsync(item);
+        }
+
+        public Task<int> DeleteUser(User item)
+        {
+            return Database.DeleteAsync(item);
+        }
+        public async void DeleteUser()
+        {
+            var user = await GetLoggedUser();
+
+            await Database.DeleteAsync(user);
         }
     }
 }

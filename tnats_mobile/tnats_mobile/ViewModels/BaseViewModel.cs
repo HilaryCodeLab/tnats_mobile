@@ -23,6 +23,7 @@ namespace tnats_mobile.ViewModels
                 {
                     database = new ObservationDatabase();
                 }
+
                 return database;
             }
         }

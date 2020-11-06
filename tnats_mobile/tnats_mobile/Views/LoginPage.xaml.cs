@@ -18,6 +18,9 @@ namespace tnats_mobile.Views
         {
             InitializeComponent();
             this.BindingContext = new LoginViewModel();
+
+            var user = App.Database.GetLoggedUser();
+
         }
 
         async void LoginProcedure(object sender, EventArgs e)
@@ -25,15 +28,12 @@ namespace tnats_mobile.Views
             string userName = Entry_Username.Text;
             string password = Entry_Password.Text;
 
-            var isValid = AreCredentialsCorrect(userName, password);
-            if (isValid)
-            {
-                bool doCredentialsExist = App.CredentialsService.DoCredentialsExist();
-                if (!doCredentialsExist)
-                {
-                    App.CredentialsService.SaveCredentials(userName, password);
-                }
 
+
+            var token = App.ApiService.Login(userName, password);
+
+            if (!string.IsNullOrEmpty(token))
+            {
                 Navigation.InsertPageBefore(new HomePage(), this);
                 await Navigation.PopAsync();
             }
@@ -42,6 +42,24 @@ namespace tnats_mobile.Views
                 messageLabel.Text = "Login failed";
                 Entry_Password.Text = string.Empty;
             }
+
+            //var isValid = AreCredentialsCorrect(userName, password);
+            //if (isValid)
+            //{
+            //    bool doCredentialsExist = App.CredentialsService.DoCredentialsExist();
+            //    if (!doCredentialsExist)
+            //    {
+            //        App.CredentialsService.SaveCredentials(userName, password);
+            //    }
+
+            //    Navigation.InsertPageBefore(new HomePage(), this);
+            //    await Navigation.PopAsync();
+            //}
+            //else
+            //{
+            //    messageLabel.Text = "Login failed";
+            //    Entry_Password.Text = string.Empty;
+            //}
             //User user = new User(Entry_Username.Text, Entry_Password.Text);
             //if (user.CheckInformation())
             //{

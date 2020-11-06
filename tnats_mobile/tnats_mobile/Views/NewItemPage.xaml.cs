@@ -136,10 +136,12 @@ namespace tnats_mobile.Views
 
             await App.Database.SaveItemAsync(newObs);
 
-            Task.Run(() => new ApiServices().SaveObservation(newObs));
+            await Task.Run(() => new ApiServices().SaveObservation(newObs));
 
             // This will pop the current page off the navigation stack
-            await Shell.Current.GoToAsync("..");
+            //  await Shell.Current.GoToAsync("..");
+
+            await Navigation.PopAsync();
         }
     }
 }

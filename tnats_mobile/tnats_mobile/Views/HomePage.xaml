@@ -7,10 +7,10 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
+            <Label Text="TNATS Sightings App!"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
-            <Button x:Name="Btn_Login" VerticalOptions="Center" Text="Login" Clicked="AddNewItemClicked"/>
+            <Button x:Name="Btn_Login" VerticalOptions="Center" Text="Take Picture" Clicked="AddNewItemClicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

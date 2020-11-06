@@ -37,6 +37,10 @@ namespace tnats_mobile.Services
 
                     token = jObject["token"].ToString();
 
+                    App.Database.DeleteUser();
+                    //await App.Database.SaveSpecies(new Species { species = jObject["species"][i]["Species"].ToString() });
+                    App.Database.SaveUser(new User { Id = 1, Username = pEmail, Password = pPassword, Token = token });
+
                     Debug.WriteLine(@"\tTodoItem successfully saved.");
                 }
             }
@@ -48,121 +52,12 @@ namespace tnats_mobile.Services
 
             return token;
         }
-        //public string Login(string email, string password)
-        //{
-        //    var client = new RestClient();
-        //    var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
-
-
-        //    var apiInput = new { email = "test@test.com.au", password = "123123123" };
-
-        //    request.AddJsonBody(apiInput);
-        //    request.AddHeader("Accept", "*/*");
-        //    request.AddHeader("Content-Type", "application/json");
-
-        //    string token = "";
-        //    try
-        //    {
-        //        IRestResponse response = client.Execute(request);
-
-        //        JObject jObject = JObject.Parse(response.Content);
-
-        //        token = jObject["token"].ToString();
-
-        //        if (response.IsSuccessful)
-        //        {
-        //            Debug.WriteLine(@"\tTodoItem successfully saved.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(@"\tERROR {0}", ex.Message);
-        //        Debug.WriteLine(@"\tERROR {0}", ex.StackTrace);
-        //    }
-
-        //    return token;
-        //}
-
-        public async Task test2(string email, string password)
-        {
-            string token = Login(email, password);
-
-            var client = new RestClient();
-
-            var request = new RestRequest(Constants.RestUrl + "/api/ceo/edit", Method.POST, DataFormat.Json);
-
-            request.AddHeader("Content-Type", "application/json");
-
-            //object containing input parameter data for DoStuff() API method
-            var apiInput = new { id = 48, name = "Marcelo Koji Furukawa", company_name = "TAFE", year = 2021, company_headquarters = "PERTH", what_company_does = "Education" };
-
-            //add parameters and token to request
-            request.Parameters.Clear();
-            request.AddParameter("application/json", JsonConvert.SerializeObject(apiInput), ParameterType.RequestBody);
-            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
-
-            try
-            {
-                IRestResponse response = await client.ExecuteAsync(request);
-
-                JObject jObject = JObject.Parse(response.Content);
-
-                //string token = jObject["data"]["token"].ToString();
-
-                if (response.IsSuccessful)
-                {
-                    Debug.WriteLine(@"\tTodoItem successfully saved.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-            }
-
-        }
-
-        public bool test(string email, string password)
-        {
-            bool bRet = false;
-            string token = Login(email, password);
-
-            var client = new RestClient();
-
-            var request = new RestRequest(Constants.RestUrl + "/api/ceo/1", Method.GET, DataFormat.Json);
-
-            request.AddHeader("Content-Type", "application/json");
-
-            //object containing input parameter data for DoStuff() API method
-            var apiInput = new { name = "Matt", age = 34 };
-
-            //add parameters and token to request
-            request.Parameters.Clear();
-            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
-
-            try
-            {
-                IRestResponse response = client.Execute(request);
-
-                JObject jObject = JObject.Parse(response.Content);
-
-                if (response.IsSuccessful)
-                {
-                    Debug.WriteLine(@"\test successfully saved.");
-                    bRet = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-            }
-
-            return bRet;
-        }
 
         public async void SaveObservation(Observation obs)
         {
-            //string token = Login("", "");
-            string token = Login();
+            var user = await App.Database.GetLoggedUser();
+
+            string token = Login(user.Username, user.Password);
 
             var client = new RestClient();
 
@@ -251,7 +146,9 @@ namespace tnats_mobile.Services
 
         public async void GetSpecies()
         {
-            string token = Login();
+            var user = await App.Database.GetLoggedUser();
+
+            string token = Login(user.Username, user.Password);
 
             var client = new RestClient();
 
@@ -291,7 +188,9 @@ namespace tnats_mobile.Services
 
         public async void GetLocations()
         {
-            string token = Login();
+            var user = await App.Database.GetLoggedUser();
+
+            string token = Login(user.Username, user.Password);
 
             var client = new RestClient();
 
