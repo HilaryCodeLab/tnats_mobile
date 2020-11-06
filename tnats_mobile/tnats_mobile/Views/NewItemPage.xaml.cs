@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 using tnats_mobile.Models;
-using tnats_mobile.ViewModels;
 using Plugin.Media.Abstractions;
 using System.Collections.ObjectModel;
 using System.Linq;
 using tnats_mobile.Services;
+using System.Threading.Tasks;
 
 namespace tnats_mobile.Views
 {
     public partial class NewItemPage : ContentPage
     {
-        ObservableCollection<string> data = new ObservableCollection<string>();
+        ObservableCollection<string> speciesList = new ObservableCollection<string>();
+        ObservableCollection<string> locationsList = new ObservableCollection<string>();
         public byte[] photo { get; set; }
         public NewItemPage()
         {
@@ -43,18 +41,17 @@ namespace tnats_mobile.Views
         {
             try
             {
-                data.Add("Austria");
-                data.Add("Australia");
-                data.Add("Azerbaijan");
-                data.Add("Bahrain");
-                data.Add("Bangladesh");
-                data.Add("Belgium");
-                data.Add("Botswana");
-                data.Add("China");
-                data.Add("Colombia");
-                data.Add("Denmark");
-                data.Add("Kmart");
-                data.Add("Pakistan");
+                var species = await App.Database.GetSpecies();
+                foreach (var item in species)
+                {
+                    speciesList.Add(item.species);
+                }
+
+                var locations = await App.Database.GetLocations();
+                foreach (var item in locations)
+                {
+                    locationsList.Add(item.location);
+                }
             }
             catch (Exception ex)
             {
@@ -78,14 +75,14 @@ namespace tnats_mobile.Views
 
             try
             {
-                var dataEmpty = data.Where(i => i.ToLower().Contains(e.NewTextValue.ToLower()));
+                var dataEmpty = locationsList.Where(i => i.ToLower().Contains(e.NewTextValue.ToLower()));
 
                 if (string.IsNullOrWhiteSpace(e.NewTextValue))
                     ShowLocationList(false);
                 else if (dataEmpty.Count() == 0)
                     ShowLocationList(false);
                 else
-                    locationListView.ItemsSource = data.Where(i => i.ToLower().Contains(e.NewTextValue.ToLower()));
+                    locationListView.ItemsSource = locationsList.Where(i => i.ToLower().Contains(e.NewTextValue.ToLower()));
             }
             catch (Exception ex)
             {
@@ -96,14 +93,14 @@ namespace tnats_mobile.Views
 
         private void pSpecies_Focused(object sender, FocusEventArgs e)
         {
-            pSpecies.ItemsSource = data;
+            pSpecies.ItemsSource = speciesList;
         }
 
         private void ShowLocationList(bool bVisible)
         {
             lblSpecies.IsVisible = pSpecies.IsVisible = lblNotes.IsVisible = txtNotes.IsVisible = stackButtons.IsVisible = !bVisible;
             locationListView.IsVisible = bVisible;
-        } 
+        }
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
@@ -138,7 +135,9 @@ namespace tnats_mobile.Views
             };
 
             await App.Database.SaveItemAsync(newObs);
-             
+
+            Task.Run(() => new ApiServices().SaveObservation(newObs));
+
             // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
         }
