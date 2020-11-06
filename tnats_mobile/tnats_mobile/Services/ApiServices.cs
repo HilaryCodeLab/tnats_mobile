@@ -48,6 +48,40 @@ namespace tnats_mobile.Services
 
             return token;
         }
+        //public string Login(string email, string password)
+        //{
+        //    var client = new RestClient();
+        //    var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
+
+
+        //    var apiInput = new { email = "test@test.com.au", password = "123123123" };
+
+        //    request.AddJsonBody(apiInput);
+        //    request.AddHeader("Accept", "*/*");
+        //    request.AddHeader("Content-Type", "application/json");
+
+        //    string token = "";
+        //    try
+        //    {
+        //        IRestResponse response = client.Execute(request);
+
+        //        JObject jObject = JObject.Parse(response.Content);
+
+        //        token = jObject["token"].ToString();
+
+        //        if (response.IsSuccessful)
+        //        {
+        //            Debug.WriteLine(@"\tTodoItem successfully saved.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(@"\tERROR {0}", ex.Message);
+        //        Debug.WriteLine(@"\tERROR {0}", ex.StackTrace);
+        //    }
+
+        //    return token;
+        //}
 
         public async Task test2(string email, string password)
         {
