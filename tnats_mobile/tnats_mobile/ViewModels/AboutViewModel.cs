@@ -34,19 +34,9 @@ namespace tnats_mobile.ViewModels
 
             TestCommand = new Command(async () =>
             {
-
-
-                //var location = await LocationServices.GetLocation();
-
-                //if (location != null)
-                //{
-                //    Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                //}
-
-                //bool b = new ApiServices().test3("", "");
-                var list = await new ApiServices().GetSpecies();
-
+                new ApiServices().GetSpecies();
                 
+                new ApiServices().GetLocations();                
             });
         }
 

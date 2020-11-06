@@ -36,6 +36,10 @@ namespace tnats_mobile.Services
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(Species)).ConfigureAwait(false);
                 }
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Location).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Location)).ConfigureAwait(false);
+                }
                 initialized = true;
             }
         }
@@ -75,11 +79,7 @@ namespace tnats_mobile.Services
         public Task<List<Species>> GetSpecies()
         {
             return Database.Table<Species>().ToListAsync();
-        }
-        //public Task<List<Species>> GetSpecies()
-        //{
-        //    return Database.QueryAsync<Species>("SELECT * FROM [Species]");
-        //}
+        } 
         public Task<int> SaveSpecies(Species item)
         {
             if (item.id != 0)
@@ -99,6 +99,36 @@ namespace tnats_mobile.Services
         public async void DeleteAllSpecies()
         {
             var list = await GetSpecies();
+
+            foreach (var item in list)
+            {
+                await Database.DeleteAsync(item);
+            }
+        }
+
+        public Task<List<Location>> GetLocations()
+        {
+            return Database.Table<Location>().ToListAsync();
+        }
+        public Task<int> SaveLocation(Location item)
+        {
+            if (item.id != 0)
+            {
+                return Database.UpdateAsync(item);
+            }
+            else
+            {
+                return Database.InsertAsync(item);
+            }
+        }
+
+        public Task<int> DeleteLocation(Location item)
+        {
+            return Database.DeleteAsync(item);
+        }
+        public async void DeleteAllLocations()
+        {
+            var list = await GetLocations();
 
             foreach (var item in list)
             {

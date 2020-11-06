@@ -15,13 +15,12 @@ namespace tnats_mobile.Services
 {
     public class ApiServices
     {
-        public string Login(string email, string password)
+        public string Login(string pEmail = "test@test.com.au", string pPassword = "123123123")
         {
             var client = new RestClient();
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
 
-            //var apiInput = new { email = email, password = password };
-            var apiInput = new { email = "test@test.com.au", password = "123123123" };
+            var apiInput = new { email = pEmail, password = pPassword };
 
             request.AddJsonBody(apiInput);
             request.AddHeader("Accept", "*/*");
@@ -32,12 +31,12 @@ namespace tnats_mobile.Services
             {
                 IRestResponse response = client.Execute(request);
 
-                JObject jObject = JObject.Parse(response.Content);
-
-                token = jObject["token"].ToString();
-
                 if (response.IsSuccessful)
                 {
+                    JObject jObject = JObject.Parse(response.Content);
+
+                    token = jObject["token"].ToString();
+
                     Debug.WriteLine(@"\tTodoItem successfully saved.");
                 }
             }
@@ -112,8 +111,6 @@ namespace tnats_mobile.Services
 
                 JObject jObject = JObject.Parse(response.Content);
 
-                //string token = jObject["data"]["token"].ToString();
-
                 if (response.IsSuccessful)
                 {
                     Debug.WriteLine(@"\test successfully saved.");
@@ -128,10 +125,10 @@ namespace tnats_mobile.Services
             return bRet;
         }
 
-        public async void test3(Observation obs)
+        public async void SaveObservation(Observation obs)
         {
-            bool bRet = false;
-            string token = Login("", "");
+            //string token = Login("", "");
+            string token = Login();
 
             var client = new RestClient();
 
@@ -149,28 +146,21 @@ namespace tnats_mobile.Services
 
             try
             {
-                IRestResponse response = client.Execute(request);
-
-                //JObject jObject = JObject.Parse(response.Content);
-
-                //string token = jObject["data"]["token"].ToString();
+                IRestResponse response = await client.ExecuteAsync(request);
 
                 if (response.IsSuccessful)
                 {
-                    test4(obs, photo_string, token);
+                    TransferPhotoString(obs, photo_string, token);
                     Debug.WriteLine(@"\test successfully saved.");
-                    bRet = true;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
             }
-
-            // return bRet;
         }
 
-        public async void test4(Observation obs, string photo_string, string token, int size = 0)
+        public async void TransferPhotoString(Observation obs, string photo_string, string token, int size = 0)
         {
             if (size == 0)
             {
@@ -182,8 +172,6 @@ namespace tnats_mobile.Services
             }
 
             string ps = photo_string.Substring(0, size);
-
-            bool bRet = false;
 
             var client = new RestClient();
 
@@ -208,32 +196,28 @@ namespace tnats_mobile.Services
 
             try
             {
-                IRestResponse response = client.Execute(request);
+                IRestResponse response = await client.ExecuteAsync(request);
 
 
                 if (response.IsSuccessful)
                 {
                     if (!string.IsNullOrEmpty(photo_string))
                     {
-                        test4(obs, photo_string, token, size);
+                        TransferPhotoString(obs, photo_string, token, size);
                     }
 
                     Debug.WriteLine(@"\test successfully saved.");
-                    bRet = true;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
             }
-
-            //   return bRet;
         }
 
-        public async Task<List<string>> GetSpecies()
+        public async void GetSpecies()
         {
-            List<string> list = new List<string>();
-            string token = Login("", "");
+            string token = Login();
 
             var client = new RestClient();
 
@@ -249,8 +233,6 @@ namespace tnats_mobile.Services
             {
                 IRestResponse response = await client.ExecuteAsync(request);
 
-                //string token = jObject["data"]["token"].ToString();
-
                 if (response.IsSuccessful)
                 {
                     App.Database.DeleteAllSpecies();
@@ -258,22 +240,59 @@ namespace tnats_mobile.Services
                     JObject jObject = JObject.Parse(response.Content);
 
                     var listLen = Convert.ToInt32(jObject["species"].Last["id"].ToString());
+
                     for (int i = 1; i < listLen; i++)
                     {
                         await App.Database.SaveSpecies(new Species { species = jObject["species"][i]["Species"].ToString() });
                     }
-                    //jObject["species"][1]["Species"].ToString()
 
-
-                    Debug.WriteLine(@"\test successfully saved.");
+                    Debug.WriteLine(@"\GetSpecies successfully.");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
             }
+        }
 
-            return list;
+        public async void GetLocations()
+        {
+            string token = Login();
+
+            var client = new RestClient();
+
+            var request = new RestRequest(Constants.RestUrl + "/api/getLocations", Method.GET, DataFormat.Json);
+
+            request.AddHeader("Content-Type", "application/json");
+
+            //add parameters and token to request
+            request.Parameters.Clear();
+            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+
+            try
+            {
+                IRestResponse response = await client.ExecuteAsync(request);
+
+                if (response.IsSuccessful)
+                {
+                    App.Database.DeleteAllLocations();
+
+                    JObject jObject = JObject.Parse(response.Content);
+
+                    var listLen = Convert.ToInt32(jObject["locations"].Last["id"].ToString());
+
+                    for (int i = 1; i < listLen; i++)
+                    {
+                        await App.Database.SaveLocation(new Location { location = jObject["locations"][i]["Location"].ToString() });
+                    }
+
+                    Debug.WriteLine(@"\GetLocations successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
         }
     }
 }
