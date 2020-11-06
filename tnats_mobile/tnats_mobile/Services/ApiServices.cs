@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using tnats_mobile.Models;
 using tnats_mobile.Util;
 
 namespace tnats_mobile.Services
@@ -17,7 +18,7 @@ namespace tnats_mobile.Services
             var client = new RestClient();
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
 
-            //var apiInput = new { email = email, password = password };
+
             var apiInput = new { email = "test@test.com.au", password = "123123123" };
 
             request.AddJsonBody(apiInput);
@@ -46,6 +47,40 @@ namespace tnats_mobile.Services
 
             return token;
         }
+        //public string Login(string email, string password)
+        //{
+        //    var client = new RestClient();
+        //    var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
+
+
+        //    var apiInput = new { email = "test@test.com.au", password = "123123123" };
+
+        //    request.AddJsonBody(apiInput);
+        //    request.AddHeader("Accept", "*/*");
+        //    request.AddHeader("Content-Type", "application/json");
+
+        //    string token = "";
+        //    try
+        //    {
+        //        IRestResponse response = client.Execute(request);
+
+        //        JObject jObject = JObject.Parse(response.Content);
+
+        //        token = jObject["token"].ToString();
+
+        //        if (response.IsSuccessful)
+        //        {
+        //            Debug.WriteLine(@"\tTodoItem successfully saved.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(@"\tERROR {0}", ex.Message);
+        //        Debug.WriteLine(@"\tERROR {0}", ex.StackTrace);
+        //    }
+
+        //    return token;
+        //}
 
         public async Task test2(string email, string password)
         {
