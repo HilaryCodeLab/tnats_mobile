@@ -11,7 +11,7 @@
             <Label x:Name="Lbl_Username">Username</Label>
             <Entry x:Name="Entry_Username" Placeholder="Username"/>
             <Label x:Name="Lbl_Password"></Label>
-            <Entry x:Name="Entry_Password" Placeholder="Password"/>
+            <Entry x:Name="Entry_Password" IsPassword="True" Placeholder="Password"/>
             <!--<Button x:Name="Btn_Login" VerticalOptions="Center" Text="Login" Command="{Binding LoginCommand}"/>-->
             <Button x:Name="Btn_Login" VerticalOptions="Center" Text="Login" Clicked="LoginProcedure"/>
             <Label x:Name="messageLabel" />

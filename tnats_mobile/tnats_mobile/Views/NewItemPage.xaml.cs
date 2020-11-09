@@ -18,7 +18,6 @@ namespace tnats_mobile.Views
         public NewItemPage()
         {
             InitializeComponent();
-            //BindingContext = new NewItemViewModel(null);
             ListOfStore();
         }
 
@@ -26,7 +25,6 @@ namespace tnats_mobile.Views
         {
             photo = p;
             InitializeComponent();
-            //BindingContext = new NewItemViewModel(p);
             ListOfStore();
 
             PhotoImage.Source = ImageSource.FromStream(() =>
@@ -42,13 +40,13 @@ namespace tnats_mobile.Views
             try
             {
                 var species = await App.Database.GetSpecies();
-                foreach (var item in species)
+                foreach (var item in species.OrderBy(x => x.species))
                 {
                     speciesList.Add(item.species);
                 }
 
                 var locations = await App.Database.GetLocations();
-                foreach (var item in locations)
+                foreach (var item in locations.OrderBy(x => x.location))
                 {
                     locationsList.Add(item.location);
                 }
@@ -104,7 +102,7 @@ namespace tnats_mobile.Views
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("..");
+            await Navigation.PopAsync();
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -137,9 +135,6 @@ namespace tnats_mobile.Views
             await App.Database.SaveItemAsync(newObs);
 
             await Task.Run(() => new ApiServices().SaveObservation(newObs));
-
-            // This will pop the current page off the navigation stack
-            //  await Shell.Current.GoToAsync("..");
 
             await Navigation.PopAsync();
         }

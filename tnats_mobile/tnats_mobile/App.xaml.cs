@@ -1,30 +1,17 @@
 ﻿using Xamarin.Forms;
 using tnats_mobile.Services;
 using tnats_mobile.Views;
-
+using System.Threading.Tasks;
 
 namespace tnats_mobile
 {
     public partial class App : Application
     {
-        public static string AppName { get { return "StoreAccountInfoApp"; } }
-
         public App()
         {
             InitializeComponent();
-
-            ////MainPage = new AppShell();
-            //MainPage = new LoginPage();
-            //CredentialsService = new CredentialsService();
-            //if (CredentialsService.DoCredentialsExist())
-            //{
             MainPage = new NavigationPage(new HomePage());
-            //}
-            //else
-            //{
-            //    MainPage = new NavigationPage(new LoginPage());
-            //}
-
+            //MainPage = new HomePage();
         }
 
         static ObservationDatabase database;
@@ -38,7 +25,7 @@ namespace tnats_mobile
                 }
                 return database;
             }
-        } 
+        }
 
         static ApiServices apiService;
         public static ApiServices ApiService

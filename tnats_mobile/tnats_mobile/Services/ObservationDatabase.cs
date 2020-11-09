@@ -145,6 +145,10 @@ namespace tnats_mobile.Services
 
         #endregion
 
+        public Task<List<User>> GetUsers()
+        {
+            return Database.Table<User>().ToListAsync();
+        }
         public Task<User> GetLoggedUser()
         {
             return Database.Table<User>().FirstOrDefaultAsync();
@@ -160,9 +164,12 @@ namespace tnats_mobile.Services
         }
         public async void DeleteUser()
         {
-            var user = await GetLoggedUser();
+            var users = await GetUsers();
 
-            await Database.DeleteAsync(user);
+            foreach (var item in users)
+            {
+                await Database.DeleteAsync(item);
+            }
         }
     }
 }

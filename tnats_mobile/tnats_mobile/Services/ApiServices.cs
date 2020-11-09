@@ -15,7 +15,7 @@ namespace tnats_mobile.Services
 {
     public class ApiServices
     {
-        public string Login(string pEmail = "test@test.com.au", string pPassword = "123123123")
+        public string Login(string pEmail = "test@test.com.au2", string pPassword = "123123123")
         {
             var client = new RestClient();
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
@@ -38,8 +38,7 @@ namespace tnats_mobile.Services
                     token = jObject["token"].ToString();
 
                     App.Database.DeleteUser();
-                    //await App.Database.SaveSpecies(new Species { species = jObject["species"][i]["Species"].ToString() });
-                    App.Database.SaveUser(new User { Id = 1, Username = pEmail, Password = pPassword, Token = token });
+                    App.Database.SaveUser(new User { Username = pEmail, Password = pPassword, Token = token });
 
                     Debug.WriteLine(@"\tTodoItem successfully saved.");
                 }
@@ -126,7 +125,6 @@ namespace tnats_mobile.Services
             try
             {
                 IRestResponse response = await client.ExecuteAsync(request);
-
 
                 if (response.IsSuccessful)
                 {

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using tnats_mobile.Models;
-using tnats_mobile.Util;
-using tnats_mobile.ViewModels;
+using tnats_mobile.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,70 +12,51 @@ namespace tnats_mobile.Views
         public LoginPage()
         {
             InitializeComponent();
-            this.BindingContext = new LoginViewModel();
 
-            var user = App.Database.GetLoggedUser();
+            //bool isAvailable = DependencyService.Get<INetworkAvailable>().IsNetworkAvailable();
 
+            //if (isAvailable)
+            //{
+            //    Debug.WriteLine("network is available");C:\Users\marce\Documents\Source Tree\tnats_mobile\tnats_mobile\tnats_mobile\Views\AboutPage.xaml
+            //}
+
+            //else
+            //{
+            //    Debug.WriteLine("network is unavailable");
+            //}
         }
 
         async void LoginProcedure(object sender, EventArgs e)
         {
-            string userName = Entry_Username.Text;
-            string password = Entry_Password.Text;
-
-
-
-            var token = App.ApiService.Login(userName, password);
+            var token = App.ApiService.Login(Entry_Username.Text, Entry_Password.Text);
 
             if (!string.IsNullOrEmpty(token))
             {
-                Navigation.InsertPageBefore(new HomePage(), this);
-                await Navigation.PopAsync();
+                new ApiServices().GetSpecies();
+
+                new ApiServices().GetLocations();
+
+                await Navigation.PushAsync(new HomePage());
+                //await Navigation.PopAsync();
+                //var n = Navigation.NavigationStack;
+
+                //if (n.Count == 0)
+                //{ 
+
+                //    await Navigation.PushAsync(new NavigationPage(new HomePage()));
+                //    //Navigation.InsertPageBefore(new HomePage(), this);
+                //    //await Navigation.PopAsync();
+                //}
+                //else
+                //{
+                //    await Navigation.PopToRootAsync();
+                //}
             }
             else
             {
-                messageLabel.Text = "Login failed";
+                messageLabel.Text = "Invalid username and/or password!";
                 Entry_Password.Text = string.Empty;
             }
-
-            //var isValid = AreCredentialsCorrect(userName, password);
-            //if (isValid)
-            //{
-            //    bool doCredentialsExist = App.CredentialsService.DoCredentialsExist();
-            //    if (!doCredentialsExist)
-            //    {
-            //        App.CredentialsService.SaveCredentials(userName, password);
-            //    }
-
-            //    Navigation.InsertPageBefore(new HomePage(), this);
-            //    await Navigation.PopAsync();
-            //}
-            //else
-            //{
-            //    messageLabel.Text = "Login failed";
-            //    Entry_Password.Text = string.Empty;
-            //}
-            //User user = new User(Entry_Username.Text, Entry_Password.Text);
-            //if (user.CheckInformation())
-            //{
-            //    DisplayAlert("Success", "Login Success", "OK");
-            //    var result = await App.RestService.Login(user);
-            //    //var result = App.ApiService.Login("test@test.com.au", "123123123");
-            //    if (result.Access_token != null)
-            //    {
-            //        App.UserDatabase.SaveUser(user);
-            //    }
-
-            //}
-            //else
-            //{
-            //    DisplayAlert("Error", "Login credentials are incorrect", "OK");
-            //}
-        }
-
-        bool AreCredentialsCorrect(string username, string password)
-        {
-            return username == User_Constants.Username && password == User_Constants.Password;
         }
     }
 }
