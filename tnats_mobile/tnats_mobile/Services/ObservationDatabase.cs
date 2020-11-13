@@ -28,22 +28,11 @@ namespace tnats_mobile.Services
         {
             if (!initialized)
             {
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Observation).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Observation)).ConfigureAwait(false);
-                }
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Species).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Species)).ConfigureAwait(false);
-                }
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(Location).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(Location)).ConfigureAwait(false);
-                }
-                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(User).Name))
-                {
-                    await Database.CreateTablesAsync(CreateFlags.None, typeof(User)).ConfigureAwait(false);
-                }
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(Observation)).ConfigureAwait(false);
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(Species)).ConfigureAwait(false);
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(Location)).ConfigureAwait(false);
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(User)).ConfigureAwait(false);
+
                 initialized = true;
             }
         }
