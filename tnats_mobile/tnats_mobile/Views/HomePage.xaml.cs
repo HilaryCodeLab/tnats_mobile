@@ -16,26 +16,22 @@ namespace tnats_mobile.Views
     {
         public HomePage()
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             Task.Run(async () =>
             {
                 var user = await App.Database.GetLoggedUser();
 
                 if (user == null)
-                { 
-                    await Navigation.PushAsync(new LoginPage());
+                {
+                    Application.Current.MainPage = new LoginPage();
                 }
-             });
+            });
         }
-        async void OnLogoutButtonClicked(object sender, EventArgs e)
+        void OnLogoutButtonClicked(object sender, EventArgs e)
         {
-            App.Database.DeleteUser();
-            //await Task.Run(() => { App.Database.DeleteUser(); });
-            //Navigation.InsertPageBefore(new LoginPage(), this);
-            //await Navigation.PopAsync();
-            //await Navigation.PushModalAsync(new LoginPage());
-            await Navigation.PushAsync(new LoginPage());
+            App.Database.DeleteUser(); 
+            Application.Current.MainPage = new LoginPage();
         }
 
         async void AddNewItemClicked(object sender, EventArgs e)
@@ -56,7 +52,7 @@ namespace tnats_mobile.Views
             if (file == null)
                 return;
 
-            await Navigation.PushAsync(new NewItemPage(file, GetPhoto(file.Path)));
+            Application.Current.MainPage = new NewItemPage(file, GetPhoto(file.Path));
         }
 
         public static byte[] GetPhoto(string filePath)

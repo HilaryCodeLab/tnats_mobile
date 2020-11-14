@@ -10,8 +10,7 @@ namespace tnats_mobile
         public App()
         {
             InitializeComponent();
-            MainPage = new NavigationPage(new HomePage());
-            //MainPage = new HomePage();
+            MainPage = new HomePage();
         }
 
         static ObservationDatabase database;

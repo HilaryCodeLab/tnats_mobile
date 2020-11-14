@@ -12,45 +12,19 @@ namespace tnats_mobile.Views
         public LoginPage()
         {
             InitializeComponent();
-
-            //bool isAvailable = DependencyService.Get<INetworkAvailable>().IsNetworkAvailable();
-
-            //if (isAvailable)
-            //{
-            //    Debug.WriteLine("network is available");C:\Users\marce\Documents\Source Tree\tnats_mobile\tnats_mobile\tnats_mobile\Views\AboutPage.xaml
-            //}
-
-            //else
-            //{
-            //    Debug.WriteLine("network is unavailable");
-            //}
         }
 
-        async void LoginProcedure(object sender, EventArgs e)
+        void LoginProcedure(object sender, EventArgs e)
         {
             var token = App.ApiService.Login(Entry_Username.Text, Entry_Password.Text);
 
             if (!string.IsNullOrEmpty(token))
             {
-                new ApiServices().GetSpecies();
+                Application.Current.MainPage = new HomePage();
 
-                new ApiServices().GetLocations();
+                Task.Run(() => { new ApiServices().GetSpecies(); });
 
-                await Navigation.PushAsync(new HomePage());
-                //await Navigation.PopAsync();
-                //var n = Navigation.NavigationStack;
-
-                //if (n.Count == 0)
-                //{ 
-
-                //    await Navigation.PushAsync(new NavigationPage(new HomePage()));
-                //    //Navigation.InsertPageBefore(new HomePage(), this);
-                //    //await Navigation.PopAsync();
-                //}
-                //else
-                //{
-                //    await Navigation.PopToRootAsync();
-                //}
+                Task.Run(() => { new ApiServices().GetLocations(); });
             }
             else
             {

@@ -32,8 +32,8 @@
             </StackLayout>            
             
             <StackLayout x:Name="stackButtons"  Orientation="Horizontal" VerticalOptions="End">
-                <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="FillAndExpand" Clicked="btnCancel_Clicked"></Button>
-                <Button x:Name="btnSave" Text="Save" HorizontalOptions="FillAndExpand" Clicked="btnSave_Clicked"></Button>
+                <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="FillAndExpand" Clicked="btnCancel_Clicked" BackgroundColor="DarkSeaGreen"></Button>
+                <Button x:Name="btnSave" Text="Save" HorizontalOptions="FillAndExpand" Clicked="btnSave_Clicked" BackgroundColor="DarkSeaGreen"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

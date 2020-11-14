@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tnats_mobile.Models;
@@ -210,9 +211,7 @@ namespace tnats_mobile.Services
 
                     JObject jObject = JObject.Parse(response.Content);
 
-                    var listLen = Convert.ToInt32(jObject["locations"].Last["id"].ToString());
-
-                    for (int i = 1; i < listLen; i++)
+                    for (int i = 0; i < jObject["locations"].Count(); i++)
                     {
                         await App.Database.SaveLocation(new Location { location = jObject["locations"][i]["Location"].ToString() });
                     }

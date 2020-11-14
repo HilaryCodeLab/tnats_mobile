@@ -100,9 +100,9 @@ namespace tnats_mobile.Views
             locationListView.IsVisible = bVisible;
         }
 
-        private async void btnCancel_Clicked(object sender, EventArgs e)
+        private void btnCancel_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync();
+            Application.Current.MainPage = new HomePage();
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -136,7 +136,7 @@ namespace tnats_mobile.Views
 
             await Task.Run(() => new ApiServices().SaveObservation(newObs));
 
-            await Navigation.PopAsync();
+            Application.Current.MainPage = new HomePage();
         }
     }
 }
