@@ -130,9 +130,9 @@ namespace tnats_mobile.Services
                 if (response.IsSuccessful)
                 {
                     if (!string.IsNullOrEmpty(photo_string))
-                    {
                         TransferPhotoString(obs, photo_string, token, size);
-                    }
+                    else
+                        await App.Database.DeleteItemAsync(obs);
 
                     Debug.WriteLine(@"\test successfully saved.");
                 }

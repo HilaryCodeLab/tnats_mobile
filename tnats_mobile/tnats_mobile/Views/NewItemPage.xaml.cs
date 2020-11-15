@@ -134,7 +134,8 @@ namespace tnats_mobile.Views
 
             await App.Database.SaveItemAsync(newObs);
 
-            await Task.Run(() => new ApiServices().SaveObservation(newObs));
+            if (DependencyService.Get<INetworkAvailable>().IsNetworkAvailable())
+                await Task.Run(() => new ApiServices().SaveObservation(newObs));
 
             Application.Current.MainPage = new HomePage();
         }

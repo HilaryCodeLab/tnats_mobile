@@ -7,10 +7,10 @@
             <StackLayout x:Name="stackButtons"  Orientation="Horizontal" BackgroundColor="DarkSeaGreen">
                 <Button x:Name="btnLogout" Text="Logout" HorizontalOptions="EndAndExpand" Clicked="OnLogoutButtonClicked" BackgroundColor="DarkSeaGreen"></Button>
             </StackLayout>
-            <Label Text="TNATS Sightings App!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-            <Button x:Name="Btn_Login" VerticalOptions="Center" Text="Take Picture" BackgroundColor="DarkSeaGreen" Clicked="AddNewItemClicked"/>
+            <Label Text="TNATS Sightings App!" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+            <StackLayout>
+                <Button x:Name="btnTakePicture" VerticalOptions="Center" Text="Take Picture" BackgroundColor="DarkSeaGreen" Clicked="AddNewItemClicked"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

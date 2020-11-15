@@ -13,7 +13,6 @@ namespace tnats_mobile.Views
         {
             InitializeComponent();
         }
-
         void LoginProcedure(object sender, EventArgs e)
         {
             var token = App.ApiService.Login(Entry_Username.Text, Entry_Password.Text);
