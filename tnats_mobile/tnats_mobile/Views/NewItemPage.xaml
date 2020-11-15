@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="tnats_mobile.Views.NewItemPage"
+             Shell.PresentationMode="ModalAnimated"
+             Title="New Item">
+    <ContentPage.Content>
+        <StackLayout Spacing="3" Padding="15" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout VerticalOptions="CenterAndExpand">
+                <Image x:Name="PhotoImage" HeightRequest="100"/>
+                <Label Text="Location" FontSize="Medium" />
+                <Entry Text="{Binding Text, Mode=TwoWay}" FontSize="Medium" x:Name="txtLocation" TextChanged="txtLocation_TextChanged"/>
+                <ListView x:Name="locationListView" CachingStrategy="RecycleElement" IsVisible="False"
+                          BackgroundColor="White" ItemTapped="speciesListView_ItemTapped" 
+                          HeightRequest="300">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout BackgroundColor="White">
+                                    <Label Text="{Binding}" FontSize="16" TextColor="Black"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Label x:Name="lblSpecies" Text="Species" FontSize="Medium" />
+                <Picker x:Name="pSpecies" Title="Choose a Specie" Focused="pSpecies_Focused"></Picker>
+
+                <Label x:Name="lblNotes" Text="Notes" FontSize="Medium" />
+                <Editor x:Name="txtNotes" Text="{Binding Description, Mode=TwoWay}" AutoSize="TextChanges" FontSize="Medium" Margin="0" HeightRequest="100" />
+            </StackLayout>            
+            
+            <StackLayout x:Name="stackButtons"  Orientation="Horizontal" VerticalOptions="End">
+                <Button x:Name="btnCancel" Text="Cancel" HorizontalOptions="FillAndExpand" Clicked="btnCancel_Clicked" BackgroundColor="DarkSeaGreen"></Button>
+                <Button x:Name="btnSave" Text="Save" HorizontalOptions="FillAndExpand" Clicked="btnSave_Clicked" BackgroundColor="DarkSeaGreen"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
