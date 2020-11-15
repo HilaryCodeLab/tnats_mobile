@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tnats_mobile.Android", "tnats_mobile\tnats_mobile.Android\tnats_mobile.Android.csproj", "{00B6EA6D-C1D4-4661-B143-8D66827F3B7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tnats_mobile", "tnats_mobile\tnats_mobile\tnats_mobile.csproj", "{127D2CC9-E068-4401-B940-220AE832A4F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tnats_mobile", "tnats_mobile\tnats_mobile\tnats_mobile.csproj", "{127D2CC9-E068-4401-B940-220AE832A4F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{CBBE97D3-970B-4E8F-944F-FCADD6761703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{127D2CC9-E068-4401-B940-220AE832A4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{127D2CC9-E068-4401-B940-220AE832A4F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{127D2CC9-E068-4401-B940-220AE832A4F4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{CBBE97D3-970B-4E8F-944F-FCADD6761703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBBE97D3-970B-4E8F-944F-FCADD6761703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBBE97D3-970B-4E8F-944F-FCADD6761703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBBE97D3-970B-4E8F-944F-FCADD6761703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
