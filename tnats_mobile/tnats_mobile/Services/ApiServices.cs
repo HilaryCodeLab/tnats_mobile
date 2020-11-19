@@ -1,16 +1,10 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using tnats_mobile.Models;
 using tnats_mobile.Util;
+using Xamarin.Forms;
 
 namespace tnats_mobile.Services
 {
@@ -18,6 +12,8 @@ namespace tnats_mobile.Services
     {
         public string Login(string pEmail = "test@test.com.au2", string pPassword = "123123123")
         {
+            DependencyService.Get<ILogClass>().AddInfo("Login", "Begin");
+
             var client = new RestClient();
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
 
@@ -41,13 +37,13 @@ namespace tnats_mobile.Services
                     App.Database.DeleteUser();
                     App.Database.SaveUser(new User { Username = pEmail, Password = pPassword, Token = token });
 
-                    Debug.WriteLine(@"\tTodoItem successfully saved.");
+                    DependencyService.Get<ILogClass>().AddInfo("Login", "Successful");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                Debug.WriteLine(@"\tERROR {0}", ex.StackTrace);
+                DependencyService.Get<ILogClass>().AddError("Login", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("Login", ex.StackTrace);
             }
 
             return token;
@@ -55,6 +51,8 @@ namespace tnats_mobile.Services
 
         public async void SaveObservation(Observation obs)
         {
+            DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Begin");
+
             var user = await App.Database.GetLoggedUser();
 
             string token = Login(user.Username, user.Password);
@@ -80,17 +78,20 @@ namespace tnats_mobile.Services
                 if (response.IsSuccessful)
                 {
                     TransferPhotoString(obs, photo_string, token);
-                    Debug.WriteLine(@"\test successfully saved.");
+                    DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Successful");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("SaveObservation", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("SaveObservation", ex.StackTrace);
             }
         }
 
         public async void TransferPhotoString(Observation obs, string photo_string, string token, int size = 0)
         {
+            DependencyService.Get<ILogClass>().AddInfo("TransferPhotoString", "Begin");
+
             if (size == 0)
             {
                 size = photo_string.Length / 10;
@@ -134,23 +135,21 @@ namespace tnats_mobile.Services
                     else
                         await App.Database.DeleteItemAsync(obs);
 
-                    Debug.WriteLine(@"\test successfully saved.");
+                    DependencyService.Get<ILogClass>().AddInfo("TransferPhotoString", "Successful");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("TransferPhotoString", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("TransferPhotoString", ex.StackTrace);
             }
         }
 
-        public async void GetSpecies()
+        public async void GetSpecies(string token)
         {
-            var user = await App.Database.GetLoggedUser();
-
-            string token = Login(user.Username, user.Password);
+            DependencyService.Get<ILogClass>().AddInfo("GetSpecies", "Begin");
 
             var client = new RestClient();
-
             var request = new RestRequest(Constants.RestUrl + "/api/getSpecies", Method.GET, DataFormat.Json);
 
             request.AddHeader("Content-Type", "application/json");
@@ -176,23 +175,21 @@ namespace tnats_mobile.Services
                         await App.Database.SaveSpecies(new Species { species = jObject["species"][i]["Species"].ToString() });
                     }
 
-                    Debug.WriteLine(@"\GetSpecies successfully.");
+                    DependencyService.Get<ILogClass>().AddInfo("GetSpecies", "Successful");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("GetSpecies", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("GetSpecies", ex.StackTrace);
             }
         }
 
-        public async void GetLocations()
+        public async void GetLocations(string token)
         {
-            var user = await App.Database.GetLoggedUser();
-
-            string token = Login(user.Username, user.Password);
+            DependencyService.Get<ILogClass>().AddInfo("GetLocations", "Begin");
 
             var client = new RestClient();
-
             var request = new RestRequest(Constants.RestUrl + "/api/getLocations", Method.GET, DataFormat.Json);
 
             request.AddHeader("Content-Type", "application/json");
@@ -216,12 +213,13 @@ namespace tnats_mobile.Services
                         await App.Database.SaveLocation(new Location { location = jObject["locations"][i]["Location"].ToString() });
                     }
 
-                    Debug.WriteLine(@"\GetLocations successfully.");
+                    DependencyService.Get<ILogClass>().AddInfo("GetLocations", "Successful");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("GetLocations", ex.Message);
+                DependencyService.Get<ILogClass>().AddError("GetLocations", ex.StackTrace);
             }
         }
     }

@@ -23,21 +23,15 @@ namespace tnats_mobile.Views
                 var user = await App.Database.GetLoggedUser();
 
                 if (user == null)
-                {
                     Application.Current.MainPage = new LoginPage();
-                }
                 else
                 {
                     var obsList = await App.Database.GetItemsAsync();
 
                     if (obsList.Count > 0)
-                    {
                         if (DependencyService.Get<INetworkAvailable>().IsNetworkAvailable())
                             foreach (var item in obsList)
-                            {
                                 await Task.Run(() => new ApiServices().SaveObservation(item));
-                            }
-                    }
                 }
             });
         }

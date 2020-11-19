@@ -21,9 +21,9 @@ namespace tnats_mobile.Views
             {
                 Application.Current.MainPage = new HomePage();
 
-                Task.Run(() => { new ApiServices().GetSpecies(); });
+                Task.Run(() => { new ApiServices().GetSpecies(token); });
 
-                Task.Run(() => { new ApiServices().GetLocations(); });
+                Task.Run(() => { new ApiServices().GetLocations(token); });
             }
             else
             {
