@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using tnats_mobile.Services;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace tnats_mobile.Views
 {
@@ -15,16 +16,20 @@ namespace tnats_mobile.Views
         ObservableCollection<string> speciesList = new ObservableCollection<string>();
         ObservableCollection<string> locationsList = new ObservableCollection<string>();
         public byte[] photo { get; set; }
-        public NewItemPage()
-        {
-            InitializeComponent();
-            ListOfStore();
-        }
+        public string token { get; set; }
 
-        public NewItemPage(MediaFile file, byte[] p)
+        /// <summary>
+        /// CONSTRUCTOR CLASS
+        /// </summary>
+        /// <param name="file">PHOTO </param>
+        /// <param name="p"></param>
+        /// <param name="t"></param>
+        public NewItemPage(MediaFile file, string t)
         {
-            photo = p;
             InitializeComponent();
+
+            photo = GetPhoto(file.Path);
+            token = t;
             ListOfStore();
 
             PhotoImage.Source = ImageSource.FromStream(() =>
@@ -35,6 +40,9 @@ namespace tnats_mobile.Views
             });
         }
 
+        /// <summary>
+        /// METHOD THAT LOADS THE SPECIES AND LOCATION LOCAL VARIABLES
+        /// </summary>
         public async void ListOfStore()
         {
             try
@@ -57,7 +65,12 @@ namespace tnats_mobile.Views
             }
         }
 
-        private void speciesListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        /// <summary>
+        /// LOCATION LIST VIEW CLICK EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void locationListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             String listsd = e.Item as string;
             txtLocation.Text = listsd;
@@ -66,6 +79,11 @@ namespace tnats_mobile.Views
             ((ListView)sender).SelectedItem = null;
         }
 
+        /// <summary>
+        /// LOCATION TEXT BOX CHANGE EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtLocation_TextChanged(object sender, TextChangedEventArgs e)
         {
             ShowLocationList(true);
@@ -89,22 +107,41 @@ namespace tnats_mobile.Views
             locationListView.EndRefresh();
         }
 
+        /// <summary>
+        /// SPECIES CONTROL ON FOCUS EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pSpecies_Focused(object sender, FocusEventArgs e)
         {
             pSpecies.ItemsSource = speciesList;
         }
 
+        /// <summary>
+        /// METHOD THAT SET THE CONTROLS VISIBILITY
+        /// </summary>
+        /// <param name="bVisible"></param>
         private void ShowLocationList(bool bVisible)
         {
             lblSpecies.IsVisible = pSpecies.IsVisible = lblNotes.IsVisible = txtNotes.IsVisible = stackButtons.IsVisible = !bVisible;
             locationListView.IsVisible = bVisible;
         }
 
+        /// <summary>
+        /// "CANCEL" CLICK EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage = new HomePage();
         }
 
+        /// <summary>
+        /// "SAVE" CLICK EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
             var location = await LocationServices.GetLocation();
@@ -135,9 +172,29 @@ namespace tnats_mobile.Views
             await App.Database.SaveItemAsync(newObs);
 
             if (DependencyService.Get<INetworkAvailable>().IsNetworkAvailable())
-                await Task.Run(() => new ApiServices().SaveObservation(newObs));
+                await Task.Run(() => new ApiServices().SaveObservation(newObs, token));
+
+            await DisplayAlert("Observation", "Addded successfully!", "OK");
 
             Application.Current.MainPage = new HomePage();
+        }
+
+        /// <summary>
+        /// METHOD THAT RETURNS A BYTE ARRAY OF THE PHOTO
+        /// </summary>
+        /// <param name="filePath">PATH OF THE PHOTO</param>
+        /// <returns>ARRAY OF BYTES</returns>
+        public static byte[] GetPhoto(string filePath)
+        {
+            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+
+            byte[] photo = br.ReadBytes((int)fs.Length);
+
+            br.Close();
+            fs.Close();
+
+            return photo;
         }
     }
 }

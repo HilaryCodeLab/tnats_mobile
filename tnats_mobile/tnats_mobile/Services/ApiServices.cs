@@ -10,18 +10,24 @@ namespace tnats_mobile.Services
 {
     public class ApiServices
     {
-        public string Login(string pEmail = "test@test.com.au2", string pPassword = "123123123")
+        /// <summary>
+        /// METHOD THAT CALLS AN API TO RETRIEVE THE TOKEN USED TO USE OTHER API
+        /// </summary>
+        /// <param name="pEmail">USERNAME</param>
+        /// <param name="pPassword">PASSWORD</param>
+        /// <returns></returns>
+        public string Login(string pEmail, string pPassword)
         {
             DependencyService.Get<ILogClass>().AddInfo("Login", "Begin");
+
+            var apiInput = new { email = pEmail, password = pPassword };
 
             var client = new RestClient();
             var request = new RestRequest(Constants.RestUrl + "/api/login", Method.POST, DataFormat.Json);
 
-            var apiInput = new { email = pEmail, password = pPassword };
-
-            request.AddJsonBody(apiInput);
             request.AddHeader("Accept", "*/*");
             request.AddHeader("Content-Type", "application/json");
+            request.AddJsonBody(apiInput);
 
             string token = "";
             try
@@ -49,36 +55,44 @@ namespace tnats_mobile.Services
             return token;
         }
 
-        public async void SaveObservation(Observation obs)
+        /// <summary>
+        /// METHOD THAT CALLS AN API TO SAVE THE OBSERVATION TO THE CLOUD DATABASE
+        /// </summary>
+        /// <param name="obs">OBSERVATION OBJECT</param>
+        /// <param name="token">USER TOKEN TO ACCESS THE API</param>
+        public async void SaveObservation(Observation obs, string token)
         {
             DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Begin");
-
-            var user = await App.Database.GetLoggedUser();
-
-            string token = Login(user.Username, user.Password);
-
-            var client = new RestClient();
-
-            var request = new RestRequest(Constants.RestUrl + "/api/addObs", Method.POST, DataFormat.Json);
-
-            request.AddHeader("Content-Type", "application/json");
 
             var photo_string = Convert.ToBase64String(obs.photo);
             obs.photo = null;
 
-            //add parameters and token to request
-            request.Parameters.Clear();
+            var client = new RestClient();
+            var request = new RestRequest(Constants.RestUrl + "/api/addObs", Method.POST, DataFormat.Json);
+
             request.AddJsonBody(obs);
+            request.AddHeader("Content-Type", "application/json");
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try
             {
                 IRestResponse response = await client.ExecuteAsync(request);
 
-                if (response.IsSuccessful)
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    TransferPhotoString(obs, photo_string, token);
-                    DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Successful");
+                    DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Expired Token");
+
+                    var user = await App.Database.GetLoggedUser();
+                    token = Login(user.Username, user.Password);
+                    SaveObservation(obs, token);
+                }
+                else
+                {
+                    if (response.IsSuccessful)
+                    {
+                        DependencyService.Get<ILogClass>().AddInfo("SaveObservation", "Successful");
+                        TransferPhotoString(obs, photo_string, token);
+                    }
                 }
             }
             catch (Exception ex)
@@ -88,6 +102,13 @@ namespace tnats_mobile.Services
             }
         }
 
+        /// <summary>
+        /// METHOD THAT CALLS AN API TO SAVE THE PHOTO TO THE CLOUD DATABASE
+        /// </summary>
+        /// <param name="obs">OBSERVATION OBJECT</param>
+        /// <param name="photo_string">PHOTO CONVERTED AS BASE 64 STRING</param>
+        /// <param name="token">USER TOKEN TO ACCESS THE API</param>
+        /// <param name="size">NUMBER OF CHAR TO BE SENT</param>
         public async void TransferPhotoString(Observation obs, string photo_string, string token, int size = 0)
         {
             DependencyService.Get<ILogClass>().AddInfo("TransferPhotoString", "Begin");
@@ -103,13 +124,6 @@ namespace tnats_mobile.Services
 
             string ps = photo_string.Substring(0, size);
 
-            var client = new RestClient();
-
-            var request = new RestRequest(Constants.RestUrl + "/api/addObs", Method.POST, DataFormat.Json);
-
-            request.AddHeader("Content-Type", "application/json");
-
-            ////object containing input parameter data for DoStuff() API method
             photo_string = photo_string.Replace(ps, "");
 
             var apiInput = new
@@ -119,9 +133,11 @@ namespace tnats_mobile.Services
                 end_of_photo = string.IsNullOrEmpty(photo_string)
             };
 
-            //add parameters and token to request
-            request.Parameters.Clear();
+            var client = new RestClient();
+            var request = new RestRequest(Constants.RestUrl + "/api/addObs", Method.POST, DataFormat.Json);
+
             request.AddJsonBody(apiInput);
+            request.AddHeader("Content-Type", "application/json");
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try
@@ -133,9 +149,10 @@ namespace tnats_mobile.Services
                     if (!string.IsNullOrEmpty(photo_string))
                         TransferPhotoString(obs, photo_string, token, size);
                     else
+                    {
                         await App.Database.DeleteItemAsync(obs);
-
-                    DependencyService.Get<ILogClass>().AddInfo("TransferPhotoString", "Successful");
+                        DependencyService.Get<ILogClass>().AddInfo("TransferPhotoString", "Successful");
+                    }
                 }
             }
             catch (Exception ex)
@@ -145,6 +162,10 @@ namespace tnats_mobile.Services
             }
         }
 
+        /// <summary>
+        /// METHOD THAT CALLS AN API TO RETRIVE A LIST OF SPECIES
+        /// </summary>
+        /// <param name="token">USER TOKEN TO ACCESS THE API</param>
         public async void GetSpecies(string token)
         {
             DependencyService.Get<ILogClass>().AddInfo("GetSpecies", "Begin");
@@ -153,9 +174,6 @@ namespace tnats_mobile.Services
             var request = new RestRequest(Constants.RestUrl + "/api/getSpecies", Method.GET, DataFormat.Json);
 
             request.AddHeader("Content-Type", "application/json");
-
-            //add parameters and token to request
-            request.Parameters.Clear();
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try
@@ -168,9 +186,7 @@ namespace tnats_mobile.Services
 
                     JObject jObject = JObject.Parse(response.Content);
 
-                    var listLen = Convert.ToInt32(jObject["species"].Last["id"].ToString());
-
-                    for (int i = 1; i < listLen; i++)
+                    for (int i = 1; i < jObject["species"].Count(); i++)
                     {
                         await App.Database.SaveSpecies(new Species { species = jObject["species"][i]["Species"].ToString() });
                     }
@@ -185,6 +201,10 @@ namespace tnats_mobile.Services
             }
         }
 
+        /// <summary>
+        /// METHOD THAT CALLS AN API TO RETRIVE A LIST OF LOCATIONS
+        /// </summary>
+        /// <param name="token">USER TOKEN TO ACCESS THE API</param>
         public async void GetLocations(string token)
         {
             DependencyService.Get<ILogClass>().AddInfo("GetLocations", "Begin");
@@ -193,9 +213,6 @@ namespace tnats_mobile.Services
             var request = new RestRequest(Constants.RestUrl + "/api/getLocations", Method.GET, DataFormat.Json);
 
             request.AddHeader("Content-Type", "application/json");
-
-            //add parameters and token to request
-            request.Parameters.Clear();
             request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
 
             try

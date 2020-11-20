@@ -11,7 +11,7 @@
                 <Label Text="Location" FontSize="Medium" />
                 <Entry Text="{Binding Text, Mode=TwoWay}" FontSize="Medium" x:Name="txtLocation" TextChanged="txtLocation_TextChanged"/>
                 <ListView x:Name="locationListView" CachingStrategy="RecycleElement" IsVisible="False"
-                          BackgroundColor="White" ItemTapped="speciesListView_ItemTapped" 
+                          BackgroundColor="White" ItemTapped="locationListView_ItemTapped" 
                           HeightRequest="300">
                     <ListView.ItemTemplate>
                         <DataTemplate>

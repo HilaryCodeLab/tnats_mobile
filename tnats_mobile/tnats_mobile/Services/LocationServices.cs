@@ -7,6 +7,10 @@ namespace tnats_mobile.Services
 {
     public class LocationServices
     {
+        /// <summary>
+        /// METHOD TO RETRIEVE THE GEOLOCATION
+        /// </summary>
+        /// <returns>GEOLOCATION</returns>
         public static async Task<Location> GetLocation()
         {
             try
@@ -16,7 +20,6 @@ namespace tnats_mobile.Services
                 if (location != null)
                 {
                     return location;
-                    //Debug.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
                 }
             }
             catch (FeatureNotSupportedException fnsEx)

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Xamarin.Forms;
 
 namespace tnats_mobile.Util
 {
@@ -18,6 +15,9 @@ namespace tnats_mobile.Util
             // enable multi-threaded database access
             SQLite.SQLiteOpenFlags.SharedCache;
 
+        /// <summary>
+        /// METHOD THAT RETURNS THE DATABASE PHYSICAL PATH
+        /// </summary>
         public static string DatabasePath
         {
             get

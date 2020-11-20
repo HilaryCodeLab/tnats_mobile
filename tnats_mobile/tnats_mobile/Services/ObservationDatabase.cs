@@ -1,8 +1,6 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using tnats_mobile.Models;
 using tnats_mobile.Util;
@@ -19,11 +17,18 @@ namespace tnats_mobile.Services
         static SQLiteAsyncConnection Database => lazyInitializer.Value;
         static bool initialized = false;
 
+        /// <summary>
+        /// CONSTRUCTOR CLASS
+        /// </summary>
         public ObservationDatabase()
         {
             InitializeAsync().SafeFireAndForget(false);
         }
 
+        /// <summary>
+        /// INITIALIZE THE DATABASE
+        /// </summary>
+        /// <returns></returns>
         async Task InitializeAsync()
         {
             if (!initialized)
@@ -37,19 +42,13 @@ namespace tnats_mobile.Services
             }
         }
 
+        /// <summary>
+        /// OBSERVATION LOCAL DATABASE METHODS
+        /// </summary>
+        #region Observation
         public Task<List<Observation>> GetItemsAsync()
         {
             return Database.Table<Observation>().ToListAsync();
-        }
-
-        public Task<List<Observation>> GetItemsNotDoneAsync()
-        {
-            return Database.QueryAsync<Observation>("SELECT * FROM [Observation]");
-        }
-
-        public Task<Observation> GetItemAsync(int id)
-        {
-            return Database.Table<Observation>().Where(i => i.id == id).FirstOrDefaultAsync();
         }
 
         public Task<int> SaveItemAsync(Observation item)
@@ -69,6 +68,11 @@ namespace tnats_mobile.Services
             return Database.DeleteAsync(item);
         }
 
+        #endregion
+
+        /// <summary>
+        /// SPECIES LOCAL DATABASE METHODS
+        /// </summary>
         #region Species
         public Task<List<Species>> GetSpecies()
         {
@@ -101,6 +105,9 @@ namespace tnats_mobile.Services
         }
         #endregion
 
+        /// <summary>
+        /// LOCATIONS LOCAL DATABASE METHODS
+        /// </summary>
         #region Locations
         public Task<List<Location>> GetLocations()
         {
@@ -134,6 +141,11 @@ namespace tnats_mobile.Services
 
         #endregion
 
+        /// <summary>
+        /// USER LOCAL DATABASE METHODS
+        /// </summary>
+        #region User
+
         public Task<List<User>> GetUsers()
         {
             return Database.Table<User>().ToListAsync();
@@ -146,12 +158,7 @@ namespace tnats_mobile.Services
         {
             return Database.InsertAsync(item);
         }
-
-        public Task<int> DeleteUser(User item)
-        {
-            return Database.DeleteAsync(item);
-        }
-        public async void DeleteUser()
+         public async void DeleteUser()
         {
             var users = await GetUsers();
 
@@ -160,5 +167,7 @@ namespace tnats_mobile.Services
                 await Database.DeleteAsync(item);
             }
         }
+
+        #endregion
     }
 }

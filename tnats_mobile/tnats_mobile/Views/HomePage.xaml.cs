@@ -1,9 +1,6 @@
 ﻿using Plugin.Media;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using tnats_mobile.Services;
 using Xamarin.Forms;
@@ -14,6 +11,11 @@ namespace tnats_mobile.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : ContentPage
     {
+        public string token { get; set; }
+
+        /// <summary>
+        /// CONSTRUCTOR CLASS OF HOME PAGE
+        /// </summary>
         public HomePage()
         {
             InitializeComponent();
@@ -26,21 +28,34 @@ namespace tnats_mobile.Views
                     Application.Current.MainPage = new LoginPage();
                 else
                 {
+                    token = user.Token;
+
                     var obsList = await App.Database.GetItemsAsync();
 
                     if (obsList.Count > 0)
                         if (DependencyService.Get<INetworkAvailable>().IsNetworkAvailable())
                             foreach (var item in obsList)
-                                await Task.Run(() => new ApiServices().SaveObservation(item));
+                                await Task.Run(() => new ApiServices().SaveObservation(item, token));
                 }
             });
         }
+
+        /// <summary>
+        /// "LOGOUT" CLICK EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void OnLogoutButtonClicked(object sender, EventArgs e)
         {
             App.Database.DeleteUser();
             Application.Current.MainPage = new LoginPage();
         }
 
+        /// <summary>
+        /// "TAKE PICTURE" CLICK EVENT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         async void AddNewItemClicked(object sender, EventArgs e)
         {
             if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
@@ -59,20 +74,7 @@ namespace tnats_mobile.Views
             if (file == null)
                 return;
 
-            Application.Current.MainPage = new NewItemPage(file, GetPhoto(file.Path));
-        }
-
-        public static byte[] GetPhoto(string filePath)
-        {
-            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            BinaryReader br = new BinaryReader(fs);
-
-            byte[] photo = br.ReadBytes((int)fs.Length);
-
-            br.Close();
-            fs.Close();
-
-            return photo;
+            Application.Current.MainPage = new NewItemPage(file, token);
         }
     }
 }
