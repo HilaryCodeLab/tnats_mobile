@@ -4,7 +4,7 @@
              x:Class="tnats_mobile.Views.HomePage">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout x:Name="stackButtons"  Orientation="Horizontal" BackgroundColor="DarkSeaGreen">
+            <StackLayout Orientation="Horizontal" BackgroundColor="DarkSeaGreen">
                 <Button x:Name="btnLogout" Text="Logout" HorizontalOptions="EndAndExpand" Clicked="OnLogoutButtonClicked" BackgroundColor="DarkSeaGreen"></Button>
             </StackLayout>
             <Label Text="TNATS Sightings App!" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />

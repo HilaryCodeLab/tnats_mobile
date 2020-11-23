@@ -15,6 +15,7 @@ namespace tnats_mobile.Views
         public LoginPage()
         {
             InitializeComponent();
+            DependencyService.Get<ILogClass>().AddDebug("LoginPage", "Open");
         }
 
         /// <summary>

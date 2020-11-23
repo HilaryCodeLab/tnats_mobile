@@ -33,8 +33,11 @@ namespace tnats_mobile.Services
             try
             {
                 IRestResponse response = client.Execute(request);
-
-                if (response.IsSuccessful)
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    DependencyService.Get<ILogClass>().AddInfo("Login", "Invalid Credentials");
+                }
+                else if (response.IsSuccessful)
                 {
                     JObject jObject = JObject.Parse(response.Content);
 

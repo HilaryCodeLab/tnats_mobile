@@ -18,6 +18,7 @@ namespace tnats_mobile.Views
         /// </summary>
         public HomePage()
         {
+            DependencyService.Get<ILogClass>().AddDebug("HomePage", "Open");
             InitializeComponent();
 
             Task.Run(async () =>
@@ -25,17 +26,24 @@ namespace tnats_mobile.Views
                 var user = await App.Database.GetLoggedUser();
 
                 if (user == null)
+                {
+                    DependencyService.Get<ILogClass>().AddDebug("HomePage", "User not found");
                     Application.Current.MainPage = new LoginPage();
+                }
                 else
                 {
+                    DependencyService.Get<ILogClass>().AddDebug("HomePage", "User found");
                     token = user.Token;
 
                     var obsList = await App.Database.GetItemsAsync();
 
                     if (obsList.Count > 0)
                         if (DependencyService.Get<INetworkAvailable>().IsNetworkAvailable())
+                        {
+                            DependencyService.Get<ILogClass>().AddDebug("HomePage", "Upload Obs");
                             foreach (var item in obsList)
                                 await Task.Run(() => new ApiServices().SaveObservation(item, token));
+                        }
                 }
             });
         }

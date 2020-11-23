@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using tnats_mobile.Models;
 using tnats_mobile.Util;
+using Xamarin.Forms;
 
 namespace tnats_mobile.Services
 {
@@ -11,6 +12,7 @@ namespace tnats_mobile.Services
     {
         static readonly Lazy<SQLiteAsyncConnection> lazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
         {
+            DependencyService.Get<ILogClass>().AddDebug("ObservationDatabase", "lazyInitializer");
             return new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
         });
 
@@ -33,6 +35,8 @@ namespace tnats_mobile.Services
         {
             if (!initialized)
             {
+                DependencyService.Get<ILogClass>().AddDebug("ObservationDatabase", "InitializeAsync");
+
                 await Database.CreateTablesAsync(CreateFlags.None, typeof(Observation)).ConfigureAwait(false);
                 await Database.CreateTablesAsync(CreateFlags.None, typeof(Species)).ConfigureAwait(false);
                 await Database.CreateTablesAsync(CreateFlags.None, typeof(Location)).ConfigureAwait(false);
